@@ -40,6 +40,12 @@ const TrainingConfig = ({ uploadedData, onTrainingStart, onBack }) => {
       description: 'State-of-the-art model for medical imaging',
       icon: '⚡',
       advanced: true
+    },
+    { 
+      value: 'unet', 
+      label: 'U-Net', 
+      description: 'Semantic segmentation with skip connections',
+      icon: '🔗'
     }
   ]);
 
@@ -100,6 +106,19 @@ const TrainingConfig = ({ uploadedData, onTrainingStart, onBack }) => {
       } else if (newModelType === 'efficientnetv2') {
         // EfficientNetV2 has automatic architecture
         newLayers = [];
+      } else if (newModelType === 'unet') {
+        newLayers = [
+          { type: 'conv2d', filters: 64, kernelSize: 3, activation: 'relu' },
+          { type: 'maxpool2d', poolSize: 2 },
+          { type: 'conv2d', filters: 128, kernelSize: 3, activation: 'relu' },
+          { type: 'maxpool2d', poolSize: 2 },
+          { type: 'conv2d', filters: 256, kernelSize: 3, activation: 'relu' },
+          { type: 'upsampling2d', size: 2 },
+          { type: 'conv2d', filters: 128, kernelSize: 3, activation: 'relu' },
+          { type: 'upsampling2d', size: 2 },
+          { type: 'conv2d', filters: 64, kernelSize: 3, activation: 'relu' },
+          { type: 'conv2d', filters: 1, kernelSize: 1, activation: 'sigmoid' }
+        ];
       }
       
       // Adjust optimizer for perceptron
